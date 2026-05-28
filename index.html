@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>MeanAI — Your Free Intelligent Study Companion</title>
+  <meta name="description" content="MeanAI helps students master every subject — Maths, Statistics, Biology, Chemistry, Physics, English and more. Free AI-powered explanations."/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Cabinet+Grotesk:wght@400;500;700;800;900&family=Instrument+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+  <style>
+    :root {
+      --ink:  #0c0d11; --ink2: #111318; --ink3: #1a1c24; --ink4: #252830;
+      --muted:#6b7280; --sub:  #9ca3b0; --white:#ffffff;
+      --lime: #c8f135; --limd: #a8d01a;
+      --teal: #00bfa5; --coral:#ff5f57; --sky:  #4facfe;
+      --r:12px; --rl:20px;
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth}
+    body{font-family:'Instrument Sans',sans-serif;background:var(--ink);color:var(--white);overflow-x:hidden;-webkit-font-smoothing:antialiased}
+
+    /* ── NAV ── */
+    nav{
+      position:fixed;top:0;left:0;right:0;z-index:100;
+      height:66px;display:flex;align-items:center;justify-content:space-between;
+      padding:0 max(24px,5vw);
+      background:rgba(12,13,17,.8);backdrop-filter:blur(16px);
+      border-bottom:1px solid rgba(255,255,255,.06);
+    }
+    .nav-brand{display:flex;align-items:center;gap:10px;text-decoration:none}
+    .brand-mark{
+      width:36px;height:36px;border-radius:10px;background:var(--lime);
+      display:flex;align-items:center;justify-content:center;flex-shrink:0;
+    }
+    .brand-mark svg{width:20px;height:20px}
+    .brand-name{font-family:'Cabinet Grotesk',sans-serif;font-weight:800;font-size:1.2rem;color:var(--white)}
+    .brand-name em{color:var(--lime);font-style:normal}
+    .nav-right{display:flex;align-items:center;gap:10px}
+    .btn-ghost-sm{
+      padding:8px 18px;border-radius:8px;background:transparent;
+      border:1px solid var(--ink4);color:var(--sub);
+      font-family:'Instrument Sans',sans-serif;font-size:.875rem;font-weight:500;
+      cursor:pointer;transition:all .2s;
+    }
+    .btn-ghost-sm:hover{background:var(--ink3);color:var(--white)}
+    .btn-lime-sm{
+      padding:9px 20px;border-radius:9px;background:var(--lime);color:var(--ink);
+      font-family:'Instrument Sans',sans-serif;font-size:.875rem;font-weight:700;
+      border:none;cursor:pointer;transition:all .2s;
+    }
+    .btn-lime-sm:hover{background:var(--limd);transform:translateY(-1px)}
+
+    /* ── HERO ── */
+    .hero{
+      min-height:100vh;display:flex;flex-direction:column;
+      align-items:center;justify-content:center;text-align:center;
+      padding:120px max(24px,5vw) 80px;
+      background:
+        radial-gradient(ellipse 70% 50% at 50% -5%, rgba(200,241,53,.14) 0%, transparent 65%),
+        radial-gradient(ellipse 40% 40% at 80% 70%, rgba(0,191,165,.07) 0%, transparent 55%);
+      position:relative;overflow:hidden;
+    }
+    .hero-badge{
+      display:inline-flex;align-items:center;gap:8px;
+      padding:7px 18px;border-radius:100px;
+      border:1px solid rgba(200,241,53,.3);background:rgba(200,241,53,.07);
+      font-size:.8rem;font-weight:600;color:var(--lime);letter-spacing:.05em;text-transform:uppercase;
+      margin-bottom:32px;animation:fadeUp .6s ease both;
+    }
+    .badge-dot{width:6px;height:6px;border-radius:50%;background:var(--lime);animation:blink 2s infinite}
+    @keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+    .hero h1{
+      font-family:'Cabinet Grotesk',sans-serif;
+      font-size:clamp(2.8rem,8vw,5.8rem);font-weight:900;
+      line-height:1.02;letter-spacing:-.035em;
+      max-width:14ch;animation:fadeUp .7s ease .1s both;
+    }
+    .hero h1 .lime{color:var(--lime)}
+    .hero h1 .outline{-webkit-text-stroke:1.5px rgba(255,255,255,.2);color:transparent}
+    .hero-sub{
+      font-size:clamp(1rem,2vw,1.2rem);color:var(--sub);
+      line-height:1.7;max-width:48ch;margin:24px auto 40px;
+      animation:fadeUp .7s ease .2s both;
+    }
+    .hero-btns{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;animation:fadeUp .7s ease .3s both}
+    @keyframes fadeUp{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:translateY(0)}}
+
+    .btn{
+      display:inline-flex;align-items:center;gap:8px;
+      padding:13px 28px;border-radius:var(--r);border:none;
+      font-family:'Instrument Sans',sans-serif;font-size:.975rem;font-weight:600;
+      cursor:pointer;text-decoration:none;transition:all .2s;white-space:nowrap;
+    }
+    .btn-primary{background:var(--lime);color:var(--ink);box-shadow:0 4px 20px rgba(200,241,53,.28)}
+    .btn-primary:hover{background:var(--limd);transform:translateY(-2px);box-shadow:0 8px 28px rgba(200,241,53,.38)}
+    .btn-outline{background:rgba(255,255,255,.06);color:var(--white);border:1px solid rgba(255,255,255,.12)}
+    .btn-outline:hover{background:rgba(255,255,255,.11)}
+    .btn-lg{padding:15px 34px;font-size:1.05rem;border-radius:var(--rl)}
+
+    /* ── MARQUEE ── */
+    .marquee-wrap{width:100%;overflow:hidden;border-top:1px solid var(--ink4);border-bottom:1px solid var(--ink4);padding:13px 0;background:var(--ink2)}
+    .marquee-track{display:flex;width:max-content;animation:marquee 28s linear infinite}
+    .m-item{display:flex;align-items:center;gap:8px;padding:0 28px;font-size:.875rem;font-weight:500;color:var(--muted);white-space:nowrap}
+    .m-item i{color:var(--lime);font-size:.75rem}
+    @keyframes marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+    /* ── STATS ── */
+    .stats-row{display:flex;justify-content:center;flex-wrap:wrap;border-top:1px solid var(--ink4)}
+    .stat{flex:1;min-width:120px;max-width:200px;padding:36px 20px;text-align:center;border-right:1px solid var(--ink4)}
+    .stat:last-child{border-right:none}
+    .stat-n{font-family:'Cabinet Grotesk',sans-serif;font-size:2.6rem;font-weight:900;color:var(--lime);letter-spacing:-.03em;line-height:1}
+    .stat-l{font-size:.75rem;color:var(--muted);margin-top:6px;text-transform:uppercase;letter-spacing:.06em}
+
+    /* ── FEATURES ── */
+    .section{padding:90px max(24px,5vw);max-width:1200px;margin:0 auto}
+    .sec-tag{font-size:.75rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--lime);margin-bottom:14px;display:block}
+    .sec-title{font-family:'Cabinet Grotesk',sans-serif;font-size:clamp(1.8rem,4vw,2.8rem);font-weight:800;letter-spacing:-.03em;line-height:1.1;margin-bottom:52px}
+    .sec-title em{color:var(--lime);font-style:normal}
+
+    .bento{display:grid;grid-template-columns:repeat(12,1fr);gap:16px}
+    .card{background:var(--ink2);border:1px solid var(--ink4);border-radius:var(--rl);padding:30px;transition:border-color .25s,transform .25s;overflow:hidden}
+    .card:hover{border-color:rgba(200,241,53,.3);transform:translateY(-3px)}
+    .card.s5{grid-column:span 5}.card.s7{grid-column:span 7}
+    .card.s4{grid-column:span 4}.card.s8{grid-column:span 8}
+    .card.s12{grid-column:span 12}
+    .c-icon{width:46px;height:46px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:21px;margin-bottom:18px}
+    .ic-lime{background:rgba(200,241,53,.1);color:var(--lime)}
+    .ic-teal{background:rgba(0,191,165,.1);color:var(--teal)}
+    .ic-coral{background:rgba(255,95,87,.1);color:var(--coral)}
+    .ic-sky{background:rgba(79,172,254,.1);color:var(--sky)}
+    .card h3{font-family:'Cabinet Grotesk',sans-serif;font-size:1.15rem;font-weight:800;margin-bottom:9px}
+    .card p{font-size:.9rem;color:var(--muted);line-height:1.65}
+
+    /* mini chat preview */
+    .mini-chat{margin-top:20px;background:var(--ink);border:1px solid var(--ink4);border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:9px}
+    .mc-msg{padding:9px 13px;border-radius:10px;font-size:.8rem;line-height:1.5;max-width:88%}
+    .mc-msg.u{background:rgba(200,241,53,.1);color:var(--lime);margin-left:auto;border-radius:10px 10px 2px 10px}
+    .mc-msg.a{background:var(--ink2);color:var(--sub);border-radius:10px 10px 10px 2px}
+    .mc-msg strong{color:var(--white)}
+
+    /* ── SUBJECTS ── */
+    .subjects{padding:0 max(24px,5vw) 90px}
+    .subj-grid{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(148px,1fr));max-width:1200px;margin:0 auto}
+    .subj-card{
+      background:var(--ink2);border:1px solid var(--ink4);border-radius:var(--rl);
+      padding:26px 18px;text-align:center;cursor:pointer;transition:all .25s;
+    }
+    .subj-card:hover{border-color:rgba(200,241,53,.4);background:rgba(200,241,53,.04);transform:translateY(-4px);box-shadow:0 12px 32px rgba(0,0,0,.2)}
+    .subj-ico{font-size:2.1rem;display:block;margin-bottom:11px}
+    .subj-name{font-family:'Cabinet Grotesk',sans-serif;font-weight:700;font-size:.92rem}
+    .subj-desc{font-size:.73rem;color:var(--muted);margin-top:4px}
+
+    /* ── CTA ── */
+    .cta-wrap{padding:0 max(24px,5vw);margin-bottom:90px}
+    .cta{
+      max-width:1200px;margin:0 auto;
+      background:linear-gradient(135deg,var(--lime) 0%,#aadf1a 100%);
+      border-radius:28px;padding:64px max(32px,5vw);
+      display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:28px;
+      position:relative;overflow:hidden;
+    }
+    .cta::before{content:'';position:absolute;right:-60px;top:-80px;width:280px;height:280px;border-radius:50%;background:rgba(255,255,255,.15)}
+    .cta h2{font-family:'Cabinet Grotesk',sans-serif;font-size:clamp(1.8rem,4vw,2.6rem);font-weight:900;color:var(--ink);letter-spacing:-.03em;line-height:1.1}
+    .cta p{color:rgba(12,13,17,.6);margin-top:8px;font-size:1rem}
+    .btn-dark{background:var(--ink);color:var(--white);border:1px solid var(--ink3);position:relative;z-index:1}
+    .btn-dark:hover{background:var(--ink2)}
+
+    /* ── FOOTER ── */
+    footer{border-top:1px solid var(--ink4);padding:30px max(24px,5vw);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px}
+    footer p{font-size:.85rem;color:var(--muted)}
+    footer p strong{color:var(--lime)}
+    .foot-links{display:flex;gap:20px}
+    .foot-links a{font-size:.85rem;color:var(--muted);text-decoration:none;transition:color .2s}
+    .foot-links a:hover{color:var(--white)}
+
+    /* ── AUTH MODAL ── */
+    .backdrop{
+      position:fixed;inset:0;z-index:200;
+      background:rgba(0,0,0,.75);backdrop-filter:blur(6px);
+      display:flex;align-items:center;justify-content:center;padding:20px;
+      opacity:0;pointer-events:none;transition:opacity .25s;
+    }
+    .backdrop.open{opacity:1;pointer-events:all}
+    .auth-box{
+      width:100%;max-width:430px;
+      background:var(--ink2);border:1px solid var(--ink4);border-radius:22px;
+      padding:38px;box-shadow:0 24px 64px rgba(0,0,0,.45);
+      transform:scale(.94) translateY(12px);transition:transform .3s ease;
+      position:relative;
+    }
+    .backdrop.open .auth-box{transform:scale(1) translateY(0)}
+    .auth-close{
+      position:absolute;top:18px;right:18px;width:30px;height:30px;
+      border-radius:8px;background:var(--ink4);border:none;cursor:pointer;
+      color:var(--muted);display:flex;align-items:center;justify-content:center;
+      font-size:.9rem;transition:all .2s;
+    }
+    .auth-close:hover{background:var(--coral);color:var(--white)}
+    .auth-brand{display:flex;align-items:center;gap:9px;margin-bottom:26px}
+
+    .tabs{display:flex;background:var(--ink);border-radius:10px;padding:4px;gap:4px;margin-bottom:26px}
+    .tab{
+      flex:1;padding:10px;border:none;border-radius:8px;
+      font-family:'Instrument Sans',sans-serif;font-size:.875rem;font-weight:600;
+      cursor:pointer;background:transparent;color:var(--muted);transition:all .2s;
+    }
+    .tab.active{background:var(--ink2);color:var(--white);box-shadow:0 2px 8px rgba(0,0,0,.3)}
+
+    .form-col{display:flex;flex-direction:column;gap:15px}
+    .f-lbl{font-size:.76rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--sub);display:block;margin-bottom:6px}
+    .f-wrap{position:relative}
+    .f-inp{
+      width:100%;padding:12px 42px 12px 15px;
+      background:var(--ink);border:1.5px solid var(--ink4);border-radius:10px;
+      color:var(--white);font-family:'Instrument Sans',sans-serif;font-size:.92rem;
+      outline:none;transition:border-color .2s,box-shadow .2s;
+    }
+    .f-inp:focus{border-color:var(--lime);box-shadow:0 0 0 3px rgba(200,241,53,.1)}
+    .f-inp::placeholder{color:var(--muted)}
+    .f-ico{position:absolute;right:13px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:.85rem;pointer-events:none}
+    .f-eye{position:absolute;right:11px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--muted);cursor:pointer;font-size:.85rem;padding:4px;transition:color .2s}
+    .f-eye:hover{color:var(--white)}
+
+    .f-notice{padding:10px 14px;border-radius:9px;font-size:.82rem;display:none;line-height:1.5}
+    .f-notice.err{background:rgba(255,95,87,.1);border:1px solid rgba(255,95,87,.25);color:#ff8b86;display:block}
+    .f-notice.ok{background:rgba(200,241,53,.1);border:1px solid rgba(200,241,53,.25);color:var(--lime);display:block}
+
+    .pw-bar{height:3px;background:var(--ink4);border-radius:2px;overflow:hidden;margin-top:6px}
+    .pw-fill{height:100%;width:0%;border-radius:2px;transition:width .3s,background .3s}
+    .pw-hint{font-size:.73rem;color:var(--muted);margin-top:4px}
+
+    .f-div{display:flex;align-items:center;gap:10px;color:var(--muted);font-size:.8rem}
+    .f-div::before,.f-div::after{content:'';flex:1;height:1px;background:var(--ink4)}
+    .f-foot{text-align:center;font-size:.84rem;color:var(--muted)}
+    .f-foot a{color:var(--lime);text-decoration:none;cursor:pointer}
+    .f-foot a:hover{text-decoration:underline}
+
+    .btn-full{width:100%;justify-content:center}
+
+    @media(max-width:900px){.card.s5,.card.s7,.card.s4,.card.s8{grid-column:span 12}}
+    @media(max-width:600px){nav{padding:0 16px}.hero h1{font-size:2.6rem}.auth-box{padding:26px 20px}.stat{min-width:90px}}
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-brand" href="#">
+    <div class="brand-mark">
+      <svg viewBox="0 0 20 20" fill="none"><path d="M10 2L3 7v6l7 5 7-5V7L10 2z" fill="#0c0d11" opacity=".85"/><circle cx="10" cy="10" r="3" fill="#0c0d11"/></svg>
+    </div>
+    <span class="brand-name">Mean<em>AI</em></span>
+  </a>
+  <div class="nav-right">
+    <button class="btn-ghost-sm" onclick="openAuth('login')">Sign In</button>
+    <button class="btn-lime-sm"  onclick="openAuth('register')">Get Started Free</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-badge"><span class="badge-dot"></span> Powered by Google Gemini AI</div>
+  <h1>Study Smarter.<br/><span class="lime">Learn</span> <span class="outline">Faster.</span></h1>
+  <p class="hero-sub">MeanAI gives every student a free, brilliant AI tutor available 24/7 — covering Maths, Statistics, Biology, Chemistry, Physics, English and more. Step-by-step explanations, instantly.</p>
+  <div class="hero-btns">
+    <button class="btn btn-primary btn-lg" onclick="openAuth('register')"><i class="fas fa-graduation-cap"></i> Start Learning — Free</button>
+    <button class="btn btn-outline btn-lg" onclick="openAuth('login')">Sign In</button>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee-wrap" aria-hidden="true">
+  <div class="marquee-track" id="marquee"></div>
+</div>
+
+<!-- STATS -->
+<div class="stats-row">
+  <div class="stat"><div class="stat-n">10+</div><div class="stat-l">Subjects</div></div>
+  <div class="stat"><div class="stat-n">∞</div><div class="stat-l">Questions</div></div>
+  <div class="stat"><div class="stat-n">24/7</div><div class="stat-l">Available</div></div>
+  <div class="stat"><div class="stat-n">100%</div><div class="stat-l">Free</div></div>
+  <div class="stat"><div class="stat-n">AI</div><div class="stat-l">Powered</div></div>
+</div>
+
+<!-- FEATURES -->
+<div class="section">
+  <span class="sec-tag">Why MeanAI</span>
+  <h2 class="sec-title">Everything a student needs — <em>in one place</em></h2>
+  <div class="bento">
+    <div class="card s7">
+      <div class="c-icon ic-lime"><i class="fas fa-brain"></i></div>
+      <h3>Step-by-Step Explanations</h3>
+      <p>Don't just get answers — understand the process. MeanAI breaks every concept into clear steps with real examples.</p>
+      <div class="mini-chat">
+        <div class="mc-msg u">How do I calculate standard deviation?</div>
+        <div class="mc-msg a"><strong>Great question!</strong> Here are the steps:<br/><strong>Step 1:</strong> Find the mean (average) of your data...<br/><strong>Step 2:</strong> Subtract the mean from each value...</div>
+      </div>
+    </div>
+    <div class="card s5">
+      <div class="c-icon ic-sky"><i class="fas fa-shield-alt"></i></div>
+      <h3>100% Free for Students</h3>
+      <p>No API key needed. No credit card. No hidden fees. MeanAI is completely free — powered by the site owner's Gemini AI account.</p>
+      <p style="margin-top:12px;color:var(--lime);font-size:.875rem;font-weight:600"><i class="fas fa-check"></i> Just register and start asking</p>
+    </div>
+    <div class="card s4">
+      <div class="c-icon ic-coral"><i class="fas fa-comments"></i></div>
+      <h3>Full Conversation Memory</h3>
+      <p>Ask follow-up questions, go deeper, or ask for a simpler explanation. MeanAI remembers your full conversation.</p>
+    </div>
+    <div class="card s4">
+      <div class="c-icon ic-teal"><i class="fas fa-user-lock"></i></div>
+      <h3>Your Own Account</h3>
+      <p>Sign up with email and password. Your session is saved so you can pick up where you left off.</p>
+    </div>
+    <div class="card s4">
+      <div class="c-icon ic-lime"><i class="fas fa-bolt"></i></div>
+      <h3>Instant Responses</h3>
+      <p>Powered by Google Gemini — one of the fastest and most capable AI models available today. Answers in seconds.</p>
+    </div>
+  </div>
+</div>
+
+<!-- SUBJECTS -->
+<section class="subjects">
+  <div style="max-width:1200px;margin:0 auto 40px">
+    <span class="sec-tag">Subjects</span>
+    <h2 class="sec-title" style="margin-bottom:36px">Ask anything across <em>every</em> subject</h2>
+  </div>
+  <div class="subj-grid" id="subjGrid"></div>
+</section>
+
+<!-- CTA -->
+<div class="cta-wrap">
+  <div class="cta">
+    <div>
+      <h2>Ready to study smarter?<br/>It's completely free.</h2>
+      <p>Created by a Statistics student, for every student.</p>
+    </div>
+    <button class="btn btn-dark btn-lg" onclick="openAuth('register')"><i class="fas fa-rocket"></i> Create Free Account</button>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <p>© 2025 <strong>MeanAI</strong> · Built by <strong>Sir Mean</strong> · Statistics Student & Future Data Scientist</p>
+  <div class="foot-links">
+    <a href="#">Privacy</a>
+    <a href="#">Terms</a>
+    <a href="app.html">Dashboard</a>
+  </div>
+</footer>
+
+<!-- AUTH MODAL -->
+<div class="backdrop" id="backdrop">
+  <div class="auth-box">
+    <button class="auth-close" onclick="closeAuth()"><i class="fas fa-times"></i></button>
+    <div class="auth-brand">
+      <div class="brand-mark" style="width:30px;height:30px;border-radius:8px">
+        <svg viewBox="0 0 20 20" fill="none" style="width:16px;height:16px"><path d="M10 2L3 7v6l7 5 7-5V7L10 2z" fill="#0c0d11" opacity=".85"/><circle cx="10" cy="10" r="3" fill="#0c0d11"/></svg>
+      </div>
+      <span class="brand-name" style="font-size:1rem">Mean<em style="color:var(--lime);font-style:normal">AI</em></span>
+    </div>
+
+    <div class="tabs">
+      <button class="tab active" id="t-login"    onclick="switchTab('login')">Sign In</button>
+      <button class="tab"        id="t-register" onclick="switchTab('register')">Create Account</button>
+    </div>
+
+    <!-- LOGIN PANEL -->
+    <div id="p-login">
+      <div class="form-col">
+        <div class="f-notice" id="n-login"></div>
+        <div>
+          <label class="f-lbl">Email Address</label>
+          <div class="f-wrap">
+            <input class="f-inp" type="email" id="l-email" placeholder="you@example.com" autocomplete="email"/>
+            <i class="fas fa-envelope f-ico"></i>
+          </div>
+        </div>
+        <div>
+          <label class="f-lbl">Password</label>
+          <div class="f-wrap">
+            <input class="f-inp" type="password" id="l-pwd" placeholder="Your password" autocomplete="current-password"/>
+            <button class="f-eye" onclick="eye('l-pwd',this)"><i class="fas fa-eye"></i></button>
+          </div>
+        </div>
+        <button class="btn btn-primary btn-full" onclick="doLogin()"><i class="fas fa-sign-in-alt"></i> Sign In</button>
+        <div class="f-div">or</div>
+        <button class="btn btn-outline btn-full" onclick="doDemo()"><i class="fas fa-play-circle"></i> Try Demo (No Account)</button>
+        <p class="f-foot">No account? <a onclick="switchTab('register')">Create one free →</a></p>
+      </div>
+    </div>
+
+    <!-- REGISTER PANEL -->
+    <div id="p-register" style="display:none">
+      <div class="form-col">
+        <div class="f-notice" id="n-reg"></div>
+        <div>
+          <label class="f-lbl">Full Name</label>
+          <div class="f-wrap">
+            <input class="f-inp" type="text" id="r-name" placeholder="Your full name" autocomplete="name"/>
+            <i class="fas fa-user f-ico"></i>
+          </div>
+        </div>
+        <div>
+          <label class="f-lbl">Email Address</label>
+          <div class="f-wrap">
+            <input class="f-inp" type="email" id="r-email" placeholder="you@example.com" autocomplete="email"/>
+            <i class="fas fa-envelope f-ico"></i>
+          </div>
+        </div>
+        <div>
+          <label class="f-lbl">Password</label>
+          <div class="f-wrap">
+            <input class="f-inp" type="password" id="r-pwd" placeholder="Min. 6 characters" autocomplete="new-password" oninput="pwStr(this.value)"/>
+            <button class="f-eye" onclick="eye('r-pwd',this)"><i class="fas fa-eye"></i></button>
+          </div>
+          <div class="pw-bar"><div class="pw-fill" id="pwFill"></div></div>
+          <div class="pw-hint" id="pwHint"></div>
+        </div>
+        <div>
+          <label class="f-lbl">Confirm Password</label>
+          <div class="f-wrap">
+            <input class="f-inp" type="password" id="r-conf" placeholder="Repeat password"/>
+            <button class="f-eye" onclick="eye('r-conf',this)"><i class="fas fa-eye"></i></button>
+          </div>
+        </div>
+        <button class="btn btn-primary btn-full" onclick="doRegister()"><i class="fas fa-user-plus"></i> Create My Account</button>
+        <p class="f-foot">Already have an account? <a onclick="switchTab('login')">Sign in →</a></p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ── Marquee ──
+  const items = ['📐 Mathematics','📊 Statistics','🧬 Biology','⚗️ Chemistry','⚡ Physics','📝 English','🌍 Geography','💻 Computer Science','📚 History','🔬 General Science'];
+  const doubled = [...items,...items];
+  document.getElementById('marquee').innerHTML = doubled.map(t=>`<div class="m-item"><i class="fas fa-star"></i>${t}</div>`).join('');
+
+  // ── Subjects grid ──
+  const subjects = [
+    {ico:'📐',name:'Mathematics',desc:'Algebra · Calculus · Geometry'},
+    {ico:'📊',name:'Statistics',desc:'Probability · Regression · Tests'},
+    {ico:'🧬',name:'Biology',desc:'Cells · Genetics · Ecology'},
+    {ico:'⚗️',name:'Chemistry',desc:'Reactions · Bonds · Organic'},
+    {ico:'⚡',name:'Physics',desc:'Mechanics · Waves · Electricity'},
+    {ico:'📝',name:'English',desc:'Grammar · Writing · Literature'},
+    {ico:'🌍',name:'Geography',desc:'Maps · Climate · Human Geo'},
+    {ico:'💻',name:'CS & Coding',desc:'Algorithms · Data · Web'},
+    {ico:'📚',name:'History',desc:'Events · Essays · Analysis'},
+    {ico:'🔬',name:'Science',desc:'General · Lab · Research'},
+    {ico:'➕',name:'Any Subject',desc:'Just ask anything!'},
+  ];
+  document.getElementById('subjGrid').innerHTML = subjects.map(s=>
+    `<div class="subj-card" onclick="openAuth('register')">
+       <span class="subj-ico">${s.ico}</span>
+       <div class="subj-name">${s.name}</div>
+       <div class="subj-desc">${s.desc}</div>
+     </div>`).join('');
+
+  // ── Auth modal ──
+  function openAuth(tab) {
+    document.getElementById('backdrop').classList.add('open');
+    switchTab(tab);
+    document.body.style.overflow = 'hidden';
+  }
+  function closeAuth() {
+    document.getElementById('backdrop').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+  document.getElementById('backdrop').addEventListener('click', e => { if (e.target===document.getElementById('backdrop')) closeAuth(); });
+  document.addEventListener('keydown', e => { if (e.key==='Escape') closeAuth(); });
+
+  function switchTab(t) {
+    document.getElementById('p-login').style.display    = t==='login'    ? 'block' : 'none';
+    document.getElementById('p-register').style.display = t==='register' ? 'block' : 'none';
+    document.getElementById('t-login').classList.toggle('active',    t==='login');
+    document.getElementById('t-register').classList.toggle('active', t==='register');
+    clearNotices();
+  }
+  function clearNotices() {
+    ['n-login','n-reg'].forEach(id=>{ const e=document.getElementById(id); e.className='f-notice'; e.textContent=''; });
+  }
+  function notice(id,msg,type) { const e=document.getElementById(id); e.textContent=msg; e.className='f-notice '+type; }
+
+  function eye(id,btn) {
+    const f=document.getElementById(id);
+    if(f.type==='password'){f.type='text';btn.innerHTML='<i class="fas fa-eye-slash"></i>';}
+    else{f.type='password';btn.innerHTML='<i class="fas fa-eye"></i>';}
+  }
+
+  function pwStr(val) {
+    const fill=document.getElementById('pwFill'); const hint=document.getElementById('pwHint');
+    if(!val){fill.style.width='0%';hint.textContent='';return;}
+    let sc=0;
+    if(val.length>=6)sc++;if(val.length>=10)sc++;if(/[A-Z]/.test(val))sc++;if(/[0-9]/.test(val))sc++;if(/[^a-z0-9]/i.test(val))sc++;
+    const lvl=[{p:'15%',c:'#ff5f57',t:'Too short'},{p:'30%',c:'#ff5f57',t:'Weak'},{p:'55%',c:'#ffa500',t:'Fair'},{p:'80%',c:'#c8f135',t:'Good'},{p:'100%',c:'#00bfa5',t:'Strong 💪'}];
+    const l=lvl[sc-1]||lvl[0];
+    fill.style.width=l.p;fill.style.background=l.c;hint.textContent=l.t;hint.style.color=l.c;
+  }
+
+  // ── Storage ──
+  function getUsers() { try{return JSON.parse(localStorage.getItem('meanai_users')||'[]')}catch{return[]} }
+  function saveUsers(u){localStorage.setItem('meanai_users',JSON.stringify(u))}
+  function saveSession(u){localStorage.setItem('meanai_session',JSON.stringify({id:u.id,name:u.name,email:u.email}))}
+
+  function doRegister() {
+    const name  = document.getElementById('r-name').value.trim();
+    const email = document.getElementById('r-email').value.trim().toLowerCase();
+    const pwd   = document.getElementById('r-pwd').value;
+    const conf  = document.getElementById('r-conf').value;
+    if(!name||!email||!pwd||!conf) return notice('n-reg','⚠ Please fill in all fields.','err');
+    if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return notice('n-reg','⚠ Enter a valid email address.','err');
+    if(pwd.length<6) return notice('n-reg','⚠ Password must be at least 6 characters.','err');
+    if(pwd!==conf) return notice('n-reg','⚠ Passwords do not match.','err');
+    const users=getUsers();
+    if(users.find(u=>u.email===email)) return notice('n-reg','⚠ An account with this email already exists.','err');
+    const u={id:Date.now().toString(36),name,email,pwd:btoa(pwd),created:new Date().toISOString()};
+    users.push(u);saveUsers(users);saveSession(u);
+    notice('n-reg','✓ Account created! Redirecting...','ok');
+    setTimeout(()=>{window.location.href='app.html';},900);
+  }
+
+  function doLogin() {
+    const email=document.getElementById('l-email').value.trim().toLowerCase();
+    const pwd  =document.getElementById('l-pwd').value;
+    if(!email||!pwd) return notice('n-login','⚠ Please enter your email and password.','err');
+    const u=getUsers().find(u=>u.email===email&&u.pwd===btoa(pwd));
+    if(!u) return notice('n-login','⚠ Incorrect email or password.','err');
+    saveSession(u);
+    notice('n-login','✓ Welcome back, '+u.name.split(' ')[0]+'!','ok');
+    setTimeout(()=>{window.location.href='app.html';},700);
+  }
+
+  function doDemo() {
+    saveSession({id:'demo',name:'Demo Student',email:'demo@meanai.com'});
+    window.location.href='app.html';
+  }
+</script>
+</body>
+</html>
